@@ -9,21 +9,80 @@ namespace day_planer_db
         {
             using (var db = new Day_Elements.DayContext())
             {
-                Console.WriteLine("Wprowadź nowy tytuł wpisu:");
-                string a = Console.ReadLine();
-                Console.WriteLine("Wprowadź nowy wpis");
-                string b = Console.ReadLine();
-               
-                db.Days.Add(
-                    new Day_Elements.Day
+                bool loop_main = true;
+                while (loop_main == true)
+                {
+                    Console.WriteLine("Wprowadź nowy tytuł wpisu:");
+                    string a = Console.ReadLine();
+                    Console.WriteLine("Wprowadź nowy wpis");
+                    string b = Console.ReadLine();
+
+                    db.Days.Add(
+                        new Day_Elements.Day
+                        {
+                            Title = a,
+                            Content = b,
+
+                        });
+                    db.SaveChanges();
+
+                    Console.WriteLine("Jeśli chcesz zobaczyć wpisy wprowadź: w");
+                    Console.WriteLine("Jeśli chcesz wprowadzić nowy wpis naciśni dowolny inny klawisz.");
+                    string decyzja_a = Console.ReadLine();
+                    if (decyzja_a == "w")
                     {
-                        Title = a,
-                        Content=b,
-                        
-                    }) ;
-                db.SaveChanges();
-            
-                
+                        var lista = db.Days.ToList();
+                        foreach (var n in lista)
+                        {
+                            Colorgreen();
+                            Console.WriteLine("===============================================================================");
+                            Console.WriteLine(n.Id);
+                            Console.WriteLine(n.Title);
+                            Console.WriteLine(n.Content);
+                            Console.WriteLine("===============================================================================");
+                            Colorgrey();
+                        }
+                    }
+                    bool decyzja_C = false;
+                    Console.WriteLine("Jeśli chcesz skasować jakiś element wprowadź: k");
+                    string decyzja_b = Console.ReadLine();
+                    if (decyzja_b == "k")
+                    {
+                        decyzja_C = true;
+                    }
+                    
+                    while (decyzja_C == true)
+                    {
+                        Console.WriteLine("Wprowadź nr Id posta do skasowania:");
+                        string decyzja_d = Console.ReadLine();
+                        int kas = Convert.ToInt32(decyzja_d);
+                        var singlePost = db.Days
+                                .Single(b => b.Id == kas);
+                        db.Days.Remove(singlePost);
+                        Console.WriteLine("chcesz skasować kolejny wpisz n:");
+                        string decyzja_e = Console.ReadLine();
+                        if (decyzja_e != "n")
+                        {
+                            decyzja_C = false;
+                        }
+                       
+                    }
+                    Console.WriteLine("Chcesz zakończyć program wpisz end, jeśli chcesze kontynuować naciśnij dowolny inny klawisz");
+                    string koniec = Console.ReadLine();
+                    if (koniec == "end")
+                    {
+                        loop_main = false;
+                    }
+                }
+                static void Colorgreen()
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                static void Colorgrey()
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+
             }
         }
     }
